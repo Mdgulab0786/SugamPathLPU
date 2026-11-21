@@ -166,7 +166,8 @@ export function VerifyForm({ target, onDone }: { target: { type: "edge" | "node"
     if (date > today) return void toast.error("Verification date cannot be in the future.");
     setBusy(true);
     const { error } = await supabase.from("route_verifications").insert({
-      [target.type === "edge" ? "edge_id" : "node_id"]: target.id,
+      edge_id: target.type === "edge" ? target.id : null,
+      node_id: target.type === "node" ? target.id : null,
       verified_on: date,
       verified_by: by.trim(),
       evidence_ref: evidence.trim(),

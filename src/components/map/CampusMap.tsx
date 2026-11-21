@@ -115,7 +115,7 @@ export default function CampusMap(props: CampusMapProps) {
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
           maxZoom={19}
         />
-        <ClickHandler onMapClick={onMapClick} />
+        {onMapClick && <ClickHandler onMapClick={onMapClick} />}
         <FitBounds points={fitPoints} fitKey={fitKey} />
 
         {edges.map((e) => {

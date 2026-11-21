@@ -11,8 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AccessibilityRouteImport } from './routes/accessibility'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as LiftsRouteImport } from './routes/lifts'
 import { Route as MapRouteImport } from './routes/map'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ReportRouteImport } from './routes/report'
+import { Route as Char91routeChar93RouteImport } from './routes/[route]'
+import { Route as TrackRouteImport } from './routes/track'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedMyReportsRouteImport } from './routes/_authenticated/my-reports'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedStaffIndexRouteImport } from './routes/_authenticated/staff.index'
 import { Route as AuthenticatedStaffReportsIdRouteImport } from './routes/_authenticated/staff.reports.$id'
 
@@ -25,9 +35,24 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccessibilityRoute = AccessibilityRouteImport.update({
+  id: '/accessibility',
+  path: '/accessibility',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LiftsRoute = LiftsRouteImport.update({
+  id: '/lifts',
+  path: '/lifts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MapRoute = MapRouteImport.update({
@@ -35,6 +60,42 @@ const MapRoute = MapRouteImport.update({
   path: '/map',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportRoute = ReportRouteImport.update({
+  id: '/report',
+  path: '/report',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Char91routeChar93Route = Char91routeChar93RouteImport.update({
+  id: '/route',
+  path: '/route',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrackRoute = TrackRouteImport.update({
+  id: '/track',
+  path: '/track',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMyReportsRoute = AuthenticatedMyReportsRouteImport.update({
+  id: '/my-reports',
+  path: '/my-reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStaffIndexRoute = AuthenticatedStaffIndexRouteImport.update({
   id: '/staff/',
   path: '/staff/',
@@ -49,15 +110,35 @@ const AuthenticatedStaffReportsIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/lifts': typeof LiftsRoute
   '/map': typeof MapRoute
+  '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
+  '/route': typeof Char91routeChar93Route
+  '/track': typeof TrackRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/my-reports': typeof AuthenticatedMyReportsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/staff/': typeof AuthenticatedStaffIndexRoute
   '/staff/reports/$id': typeof AuthenticatedStaffReportsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/lifts': typeof LiftsRoute
   '/map': typeof MapRoute
+  '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
+  '/route': typeof Char91routeChar93Route
+  '/track': typeof TrackRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/my-reports': typeof AuthenticatedMyReportsRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
   '/staff': typeof AuthenticatedStaffIndexRoute
   '/staff/reports/$id': typeof AuthenticatedStaffReportsIdRoute
 }
@@ -65,22 +146,72 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/about': typeof AboutRoute
+  '/accessibility': typeof AccessibilityRoute
   '/auth': typeof AuthRoute
+  '/lifts': typeof LiftsRoute
   '/map': typeof MapRoute
+  '/privacy': typeof PrivacyRoute
+  '/report': typeof ReportRoute
+  '/route': typeof Char91routeChar93Route
+  '/track': typeof TrackRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/my-reports': typeof AuthenticatedMyReportsRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/staff/': typeof AuthenticatedStaffIndexRoute
   '/_authenticated/staff/reports/$id': typeof AuthenticatedStaffReportsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/map' | '/staff/' | '/staff/reports/$id'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/accessibility'
+    | '/auth'
+    | '/lifts'
+    | '/map'
+    | '/privacy'
+    | '/report'
+    | '/route'
+    | '/track'
+    | '/admin'
+    | '/my-reports'
+    | '/notifications'
+    | '/staff/'
+    | '/staff/reports/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/map' | '/staff' | '/staff/reports/$id'
+  to:
+    | '/'
+    | '/about'
+    | '/accessibility'
+    | '/auth'
+    | '/lifts'
+    | '/map'
+    | '/privacy'
+    | '/report'
+    | '/route'
+    | '/track'
+    | '/admin'
+    | '/my-reports'
+    | '/notifications'
+    | '/staff'
+    | '/staff/reports/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/about'
+    | '/accessibility'
     | '/auth'
+    | '/lifts'
     | '/map'
+    | '/privacy'
+    | '/report'
+    | '/route'
+    | '/track'
+    | '/_authenticated/admin'
+    | '/_authenticated/my-reports'
+    | '/_authenticated/notifications'
     | '/_authenticated/staff/'
     | '/_authenticated/staff/reports/$id'
   fileRoutesById: FileRoutesById
@@ -88,8 +219,15 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AboutRoute: typeof AboutRoute
+  AccessibilityRoute: typeof AccessibilityRoute
   AuthRoute: typeof AuthRoute
+  LiftsRoute: typeof LiftsRoute
   MapRoute: typeof MapRoute
+  PrivacyRoute: typeof PrivacyRoute
+  ReportRoute: typeof ReportRoute
+  Char91routeChar93Route: typeof Char91routeChar93Route
+  TrackRoute: typeof TrackRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -108,11 +246,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/accessibility': {
+      id: '/accessibility'
+      path: '/accessibility'
+      fullPath: '/accessibility'
+      preLoaderRoute: typeof AccessibilityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lifts': {
+      id: '/lifts'
+      path: '/lifts'
+      fullPath: '/lifts'
+      preLoaderRoute: typeof LiftsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/map': {
@@ -121,6 +280,55 @@ declare module '@tanstack/react-router' {
       fullPath: '/map'
       preLoaderRoute: typeof MapRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/report': {
+      id: '/report'
+      path: '/report'
+      fullPath: '/report'
+      preLoaderRoute: typeof ReportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/route': {
+      id: '/route'
+      path: '/route'
+      fullPath: '/route'
+      preLoaderRoute: typeof Char91routeChar93RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/track': {
+      id: '/track'
+      path: '/track'
+      fullPath: '/track'
+      preLoaderRoute: typeof TrackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/my-reports': {
+      id: '/_authenticated/my-reports'
+      path: '/my-reports'
+      fullPath: '/my-reports'
+      preLoaderRoute: typeof AuthenticatedMyReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/staff/': {
       id: '/_authenticated/staff/'
@@ -140,11 +348,17 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedMyReportsRoute: typeof AuthenticatedMyReportsRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedStaffIndexRoute: typeof AuthenticatedStaffIndexRoute
   AuthenticatedStaffReportsIdRoute: typeof AuthenticatedStaffReportsIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedMyReportsRoute: AuthenticatedMyReportsRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedStaffIndexRoute: AuthenticatedStaffIndexRoute,
   AuthenticatedStaffReportsIdRoute: AuthenticatedStaffReportsIdRoute,
 }
@@ -155,8 +369,15 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AboutRoute: AboutRoute,
+  AccessibilityRoute: AccessibilityRoute,
   AuthRoute: AuthRoute,
+  LiftsRoute: LiftsRoute,
   MapRoute: MapRoute,
+  PrivacyRoute: PrivacyRoute,
+  ReportRoute: ReportRoute,
+  Char91routeChar93Route: Char91routeChar93Route,
+  TrackRoute: TrackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

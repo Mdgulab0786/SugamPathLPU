@@ -27,7 +27,7 @@ const searchSchema = z.object({
   mode: z.enum(["wheelchair", "avoid_stairs", "walking_aid", "temporary_injury", "general"]).optional(),
 });
 
-export const Route = createFileRoute("")({
+export const Route = createFileRoute("/route")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
