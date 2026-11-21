@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1795271308197,
+      "tag": "0000_clearroute_core_schema",
+      "breakpoints": true
+    }
+  ]
+}
