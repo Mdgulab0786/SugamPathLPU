@@ -82,8 +82,8 @@ function RoutePage() {
 
   function submit(e: FormEvent) {
     e.preventDefault();
-    if (!start || !goal) return setFormError("Please choose both a starting location and a destination.");
-    if (start === goal) return setFormError("Start and destination must be different places.");
+    if (!start || !goal) { setFormError("Please choose both a starting location and a destination."); return; }
+    if (start === goal) { setFormError("Start and destination must be different places."); return; }
     setFormError(null);
     setActive("best");
     setQuery({ start, goal, mode, prefs });
@@ -92,7 +92,7 @@ function RoutePage() {
 
   function nearestStart() {
     if (!data) return;
-    if (!("geolocation" in navigator)) return toast.error("Your browser does not support location.");
+    if (!("geolocation" in navigator)) { toast.error("Your browser does not support location."); return; }
     navigator.geolocation.getCurrentPosition(
       (p) => {
         const here = { lat: p.coords.latitude, lng: p.coords.longitude };
@@ -101,7 +101,7 @@ function RoutePage() {
           const d = haversineMeters(here, n);
           if (!best || d < best.d) best = { id: n.id, d, name: n.name };
         }
-        if (!best || best.d > 1500) return toast.error("You don't seem to be near any recorded campus location.");
+        if (!best || best.d > 1500) { toast.error("You don't seem to be near any recorded campus location."); return; }
         setStart(best.id);
         toast.success(`Start set to nearest place: ${best.name} (${Math.round(best.d)} m away). Your location was not stored.`);
       },

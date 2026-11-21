@@ -76,8 +76,8 @@ function AuthPage() {
     e.preventDefault();
     setError(null);
     const emailOk = z.string().email().safeParse(email.trim());
-    if (!emailOk.success) return setError("Please enter a valid email address.");
-    if (password.length < 8) return setError("Password must be at least 8 characters.");
+    if (!emailOk.success) { setError("Please enter a valid email address."); return; }
+    if (password.length < 8) { setError("Password must be at least 8 characters."); return; }
     setBusy(true);
     if (mode === "signup") {
       const { data, error: err } = await supabase.auth.signUp({
@@ -86,7 +86,7 @@ function AuthPage() {
         options: { emailRedirectTo: window.location.origin + "/auth", data: { display_name: name.trim() || undefined } },
       });
       setBusy(false);
-      if (err) return setError(err.message);
+      if (err) { setError(err.message); return; }
       if (!data.session) setCheckEmail(true);
       return;
     }

@@ -87,7 +87,7 @@ function MapPage() {
   }, [data, search]);
 
   function locate() {
-    if (!("geolocation" in navigator)) return toast.error("Your browser does not support location.");
+    if (!("geolocation" in navigator)) { toast.error("Your browser does not support location."); return; }
     navigator.geolocation.getCurrentPosition(
       (p) => { setUserLoc({ lat: p.coords.latitude, lng: p.coords.longitude }); toast.success("Showing your location once. It is not stored or tracked."); },
       () => toast.error("Location permission was not granted."),

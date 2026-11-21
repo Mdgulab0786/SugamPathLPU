@@ -56,7 +56,7 @@ function TrackPage() {
   function submit(e: FormEvent) {
     e.preventDefault();
     const c = input.trim().toUpperCase();
-    if (!/^CR-[A-F0-9]{8}$/.test(c)) return setErr("Report IDs look like CR-1A2B3C4D.");
+    if (!/^CR-[A-F0-9]{8}$/.test(c)) { setErr("Report IDs look like CR-1A2B3C4D."); return; }
     setErr(null);
     void navigate({ search: { code: c } });
   }

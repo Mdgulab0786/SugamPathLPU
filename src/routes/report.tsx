@@ -70,7 +70,7 @@ function ReportPage() {
   }
 
   function shareLocation() {
-    if (!("geolocation" in navigator)) return toast.error("Your browser does not support location.");
+    if (!("geolocation" in navigator)) { toast.error("Your browser does not support location."); return; }
     navigator.geolocation.getCurrentPosition(
       (p) => { setPoint({ lat: p.coords.latitude, lng: p.coords.longitude }); toast.success("Location added to this report only."); },
       () => toast.error("Location permission was not granted."),
