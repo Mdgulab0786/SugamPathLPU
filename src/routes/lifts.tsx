@@ -92,7 +92,7 @@ const CARD_STYLE: Record<string, { card: string; pill: string; label: string }> 
   unknown: { card: "border-border bg-card", pill: "bg-muted-foreground text-card", label: "UNKNOWN" },
 };
 
-function LiftCard({ lift: l, placeName, state, canManage }: { lift: LiftRow; placeName?: string; state: "ok" | "stale" | "down"; canManage: boolean }) {
+function LiftCard({ lift: l, placeName, state, canManage }: { lift: LiftRow; placeName: string | undefined; state: "ok" | "stale" | "down"; canManage: boolean }) {
   const [open, setOpen] = useState(false);
   const key = l.status === "operational" ? (state === "ok" ? "ok" : "stale") : l.status;
   const st = CARD_STYLE[key] ?? CARD_STYLE["unknown"]!;
