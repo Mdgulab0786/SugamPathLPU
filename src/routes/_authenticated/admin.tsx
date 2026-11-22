@@ -15,10 +15,10 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Map administration – ClearRoute" },
+      { title: "Map administration – SugamPath LPU" },
       { name: "description", content: "Verify campus pathways, export route data and check production readiness." },
-      { property: "og:title", content: "Map administration – ClearRoute" },
-      { property: "og:description", content: "ClearRoute route and map data administration." },
+      { property: "og:title", content: "Map administration – SugamPath LPU" },
+      { property: "og:description", content: "SugamPath LPU route and map data administration." },
       { name: "robots", content: "noindex" },
     ],
   }),

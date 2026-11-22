@@ -7,7 +7,7 @@ export function DemoBanner({ compact = false }: { compact?: boolean }) {
       <FlaskConical className="mt-0.5 size-5 shrink-0" aria-hidden />
       <p className="text-sm font-semibold leading-snug">
         DEMO MODE · {DEMO_LABEL}.
-        {!compact && " Places and pathways marked “Demo” are invented to show how ClearRoute works. Do not rely on them on campus."}
+        {!compact && " Places and pathways marked “Demo” are invented to show how SugamPath LPU works. Do not rely on them on campus."}
       </p>
     </div>
   );

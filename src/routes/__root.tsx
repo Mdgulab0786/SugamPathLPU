@@ -15,6 +15,8 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/lib/auth";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { BottomNav } from "@/components/layout/BottomNav";
+import { PreferencesProvider } from "@/lib/preferences";
 import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
@@ -82,9 +84,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "ClearRoute – Accessible Campus Navigation" },
+      { title: "SugamPath LPU – Step-Free Campus Navigation" },
       { name: "description", content: "Find barrier-free routes, lift status and report accessibility barriers at LPU." },
-      { property: "og:title", content: "ClearRoute – Accessible Campus Navigation" },
+      { property: "og:title", content: "SugamPath LPU – Step-Free Campus Navigation" },
       { property: "og:description", content: "Find barrier-free routes, lift status and report accessibility barriers at LPU." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -130,6 +132,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
+        <PreferencesProvider>
         <div className="flex min-h-screen flex-col">
           <SiteHeader />
           <main id="main" tabIndex={-1} className="flex-1 focus:outline-none">
@@ -137,8 +140,10 @@ function RootComponent() {
             <Outlet />
           </main>
           <SiteFooter />
+          <BottomNav />
         </div>
         <Toaster richColors position="top-center" />
+        </PreferencesProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

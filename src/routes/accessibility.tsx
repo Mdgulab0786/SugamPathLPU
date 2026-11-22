@@ -4,10 +4,10 @@ import { PageHeader } from "@/components/common/PageHeader";
 export const Route = createFileRoute("/accessibility")({
   head: () => ({
     meta: [
-      { title: "Accessibility statement – ClearRoute" },
-      { name: "description", content: "ClearRoute's commitment to WCAG 2.2 AA: keyboard access, screen-reader support, high contrast and written route directions." },
-      { property: "og:title", content: "Accessibility statement – ClearRoute" },
-      { property: "og:description", content: "How the ClearRoute website itself is designed to be accessible." },
+      { title: "Accessibility statement – SugamPath LPU" },
+      { name: "description", content: "SugamPath LPU's commitment to WCAG 2.2 AA: keyboard access, screen-reader support, high contrast and written route directions." },
+      { property: "og:title", content: "Accessibility statement – SugamPath LPU" },
+      { property: "og:description", content: "How the SugamPath LPU website itself is designed to be accessible." },
       { property: "og:type", content: "article" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -20,7 +20,7 @@ function Statement() {
     <div className="mx-auto max-w-3xl space-y-6 px-4 py-8">
       <PageHeader eyebrow="Accessibility" title="Accessibility statement" />
       <div className="space-y-5 text-lg leading-relaxed">
-        <p>ClearRoute aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA.</p>
+        <p>SugamPath LPU aims to meet the Web Content Accessibility Guidelines (WCAG) 2.2 at level AA.</p>
         <ul className="list-disc space-y-2 pl-6">
           <li>Every page can be used with a keyboard, with a visible focus outline and a "Skip to main content" link.</li>
           <li>Forms have visible labels and clear error messages; statuses use text and icons, never colour alone.</li>

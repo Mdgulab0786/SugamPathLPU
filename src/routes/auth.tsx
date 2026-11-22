@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth";
 import { ErrorBlock } from "@/components/common/PageHeader";
+import { usePreferences } from "@/lib/preferences";
 
 const searchSchema = z.object({ redirect: z.string().optional(), tab: z.enum(["guest", "student", "staff"]).optional() });
 
@@ -18,10 +19,10 @@ export const Route = createFileRoute("/auth")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
-      { title: "Sign in – ClearRoute" },
-      { name: "description", content: "Continue as a guest, or sign in as an LPU student or campus staff member to use ClearRoute." },
-      { property: "og:title", content: "Sign in – ClearRoute" },
-      { property: "og:description", content: "Guest, student and staff access to ClearRoute accessible campus navigation." },
+      { title: "Sign in – SugamPath LPU" },
+      { name: "description", content: "Continue as a guest, or sign in as an LPU student or campus staff member to use SugamPath LPU." },
+      { property: "og:title", content: "Sign in – SugamPath LPU" },
+      { property: "og:description", content: "Guest, student and staff access to SugamPath LPU accessible campus navigation." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -102,101 +103,103 @@ function AuthPage() {
     if (result.error) setError(result.error.message ?? "Sign-in failed. Please try again.");
   }
 
+  const { profile } = usePreferences();
+  const formTab: "student" | "staff" = tab === "staff" ? "staff" : "student";
   const tabs = [
-    { id: "guest" as const, label: "Continue as Guest", icon: UserRound },
-    { id: "student" as const, label: "Student Login", icon: GraduationCap },
-    { id: "staff" as const, label: "Staff Login", icon: HardHat },
+    { id: "student" as const, label: "Student", icon: GraduationCap },
+    { id: "staff" as const, label: "Staff", icon: HardHat },
   ];
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10">
-      <h1 className="text-3xl font-bold md:text-4xl">Access ClearRoute</h1>
-      <p className="mt-2 text-lg text-muted-foreground">Choose how you'd like to continue. Guests can find routes and see public accessibility information.</p>
+    <div className="mx-auto max-w-xl px-4 py-6 md:py-10">
+      <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)]">
+        <div className="bg-navy px-5 py-4 text-navy-foreground">
+          <h1 className="text-xl font-bold">Guest & Login</h1>
+          <p className="text-sm text-navy-foreground/80">Zero-Friction Access</p>
+        </div>
 
-      <div role="tablist" aria-label="Access type" className="mt-6 grid gap-2 sm:grid-cols-3">
-        {tabs.map((t) => (
-          <button
-            key={t.id}
-            role="tab"
-            type="button"
-            id={`tab-${t.id}`}
-            aria-selected={tab === t.id}
-            aria-controls={`panel-${t.id}`}
-            onClick={() => { setTab(t.id); setError(null); }}
-            className={`flex min-h-14 items-center justify-center gap-2 rounded-xl border-2 px-4 text-base font-bold transition-colors ${
-              tab === t.id ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:border-primary"
-            }`}
-          >
-            <t.icon className="size-5" aria-hidden /> {t.label}
-          </button>
-        ))}
-      </div>
+        <div className="space-y-5 p-5">
+          <div className="rounded-xl border-2 border-accent/60 bg-accent/10 p-4">
+            <p className="flex items-center gap-2 font-bold text-accent"><UserRound className="size-5" aria-hidden /> Instant Guest Access</p>
+            <p className="mt-1 text-sm text-muted-foreground">No login needed to view routes, the map & lifts, or to send an anonymous report.</p>
+          </div>
+          <Button asChild variant="hero" size="lg" className="w-full">
+            <Link to="/route" search={profile ? { mode: profile } : {}}>Continue as Guest</Link>
+          </Button>
 
-      <section id={`panel-${tab}`} role="tabpanel" aria-labelledby={`tab-${tab}`} className="surface-card mt-4 p-6 md:p-8">
-        {tab === "guest" ? (
-          <div>
-            <h2 className="text-2xl font-bold">Continue as a guest</h2>
-            <p className="mt-2 text-muted-foreground">
-              No account needed to find routes, view the campus map, check lifts or submit an anonymous report. Sign in later to track your reports in one place.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Button asChild size="lg"><Link to="/route">Find a route</Link></Button>
-              <Button asChild size="lg" variant="outline"><Link to="/map">Explore the map</Link></Button>
+          <div className="flex items-center gap-3 text-sm text-muted-foreground"><span className="h-px flex-1 bg-border" />or sign in<span className="h-px flex-1 bg-border" /></div>
+
+          {checkEmail ? (
+            <div role="status">
+              <Mail className="size-10 text-primary" aria-hidden />
+              <h2 className="mt-3 text-2xl font-bold">Check your email</h2>
+              <p className="mt-2 text-muted-foreground">We sent a confirmation link to <strong>{email}</strong>. Open it to finish creating your account, then sign in.</p>
+              <Button className="mt-4" variant="outline" onClick={() => { setCheckEmail(false); setMode("signin"); }}>Back to sign in</Button>
             </div>
-          </div>
-        ) : checkEmail ? (
-          <div role="status">
-            <Mail className="size-10 text-primary" aria-hidden />
-            <h2 className="mt-3 text-2xl font-bold">Check your email</h2>
-            <p className="mt-2 text-muted-foreground">We sent a confirmation link to <strong>{email}</strong>. Open it to finish creating your account, then sign in.</p>
-            <Button className="mt-4" variant="outline" onClick={() => { setCheckEmail(false); setMode("signin"); }}>Back to sign in</Button>
-          </div>
-        ) : (
-          <div>
-            <h2 className="text-2xl font-bold">
-              {tab === "staff" ? "Staff sign in" : mode === "signin" ? "Student sign in" : "Create a student account"}
-            </h2>
-            <p className="mt-1 text-muted-foreground">
-              {tab === "staff"
-                ? "Estate staff, lift operators and administrators sign in here. Staff roles are assigned by an Administrator."
-                : "Students can submit reports and track them. We only ask for what's needed — no medical details."}
-            </p>
-            {error && <div className="mt-4"><ErrorBlock message={error} /></div>}
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Button type="button" variant="outline" size="lg" onClick={() => void social("google")}><GoogleLogo /> Continue with Google</Button>
-              <Button type="button" variant="outline" size="lg" onClick={() => void social("lovable")}><LovableMark className="size-[18px]" /> Continue with Lovable</Button>
-            </div>
-            <div className="my-5 flex items-center gap-3 text-sm text-muted-foreground"><span className="h-px flex-1 bg-border" />or use email<span className="h-px flex-1 bg-border" /></div>
-            <form onSubmit={onSubmit} className="space-y-4" noValidate>
-              {mode === "signup" && tab === "student" && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="name" className="text-base">Display name (optional)</Label>
-                  <Input id="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="h-12 text-base" maxLength={80} />
+          ) : (
+            <div>
+              <h2 className="font-bold">University account (for Reporting / Staff)</h2>
+              <div role="tablist" aria-label="Account type" className="mt-3 grid grid-cols-2 gap-1 rounded-xl bg-secondary p-1">
+                {tabs.map((t) => (
+                  <button
+                    key={t.id}
+                    role="tab"
+                    type="button"
+                    id={`tab-${t.id}`}
+                    aria-selected={formTab === t.id}
+                    aria-controls="panel-signin"
+                    onClick={() => { setTab(t.id); setError(null); if (t.id === "staff") setMode("signin"); }}
+                    className={`flex min-h-11 items-center justify-center gap-2 rounded-lg text-base font-bold transition-colors ${
+                      formTab === t.id ? "bg-navy text-navy-foreground shadow" : "text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    <t.icon className="size-5" aria-hidden /> {t.label}
+                  </button>
+                ))}
+              </div>
+              <div id="panel-signin" role="tabpanel" aria-labelledby={`tab-${formTab}`} className="mt-4">
+                <p className="text-sm text-muted-foreground">
+                  {formTab === "staff"
+                    ? "Estate staff, lift operators and administrators. Staff roles are assigned by an Administrator."
+                    : mode === "signin" ? "Sign in to track your reports and get status updates. No medical details needed." : "Create a student account to track your reports."}
+                </p>
+                {error && <div className="mt-4"><ErrorBlock message={error} /></div>}
+                <form onSubmit={onSubmit} className="mt-4 space-y-4" noValidate>
+                  {mode === "signup" && formTab === "student" && (
+                    <div className="space-y-1.5">
+                      <Label htmlFor="name" className="text-base">Display name (optional)</Label>
+                      <Input id="name" autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} className="h-12 bg-secondary text-base" maxLength={80} />
+                    </div>
+                  )}
+                  <div className="space-y-1.5">
+                    <Label htmlFor="email" className="text-base">University email</Label>
+                    <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@lpu.in" className="h-12 bg-secondary text-base" />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="password" className="text-base">Password</Label>
+                    <Input id="password" type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} aria-describedby="pw-help" className="h-12 bg-secondary text-base" />
+                    <p id="pw-help" className="text-sm text-muted-foreground">At least 8 characters.</p>
+                  </div>
+                  <Button type="submit" variant="navy" size="lg" className="w-full" disabled={busy}>
+                    {busy ? "Please wait…" : mode === "signin" ? (formTab === "staff" ? "Staff sign in" : "Sign in") : "Create account"}
+                  </Button>
+                </form>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  <Button type="button" variant="outline" onClick={() => void social("google")}><GoogleLogo /> Google</Button>
+                  <Button type="button" variant="outline" onClick={() => void social("lovable")}><LovableMark className="size-[18px]" /> Lovable</Button>
                 </div>
-              )}
-              <div className="space-y-1.5">
-                <Label htmlFor="email" className="text-base">Email</Label>
-                <Input id="email" type="email" autoComplete="email" required value={email} onChange={(e) => setEmail(e.target.value)} className="h-12 text-base" />
+                {formTab === "student" && (
+                  <p className="mt-4 text-center">
+                    {mode === "signin" ? "New to SugamPath? " : "Already have an account? "}
+                    <button type="button" className="font-semibold text-primary underline underline-offset-4" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(null); }}>
+                      {mode === "signin" ? "Create a student account" : "Sign in"}
+                    </button>
+                  </p>
+                )}
               </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="password" className="text-base">Password</Label>
-                <Input id="password" type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} aria-describedby="pw-help" className="h-12 text-base" />
-                <p id="pw-help" className="text-sm text-muted-foreground">At least 8 characters.</p>
-              </div>
-              <Button type="submit" size="lg" className="w-full" disabled={busy}>
-                {busy ? "Please wait…" : mode === "signin" ? "Sign in" : "Create account"}
-              </Button>
-            </form>
-            {tab === "student" && (
-              <p className="mt-4 text-center">
-                {mode === "signin" ? "New to ClearRoute? " : "Already have an account? "}
-                <button type="button" className="font-semibold text-primary underline underline-offset-4" onClick={() => { setMode(mode === "signin" ? "signup" : "signin"); setError(null); }}>
-                  {mode === "signin" ? "Create a student account" : "Sign in"}
-                </button>
-              </p>
-            )}
-          </div>
-        )}
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

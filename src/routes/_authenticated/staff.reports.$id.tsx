@@ -18,9 +18,9 @@ import { Input } from "@/components/ui/input";
 
 export const Route = createFileRoute("/_authenticated/staff/reports/$id")({
   head: () => ({ meta: [
-    { title: "Manage accessibility report – ClearRoute" },
+    { title: "Manage accessibility report – SugamPath LPU" },
     { name: "description", content: "Review an accessibility report, coordinate repairs and record resolution evidence." },
-    { property: "og:title", content: "Manage accessibility report – ClearRoute" },
+    { property: "og:title", content: "Manage accessibility report – SugamPath LPU" },
     { property: "og:description", content: "Private estate report workspace with assignments, internal notes and audit history." },
     { name: "robots", content: "noindex" },
   ] }),
@@ -121,7 +121,7 @@ function Management({ report, staff }: { report: ReportRow; staff: { id: string;
   const dirty = status !== report.status || priority !== (report.priority ?? "") || assignee !== (report.assigned_to ?? "");
   return <section className="surface-card space-y-4 p-6"><h2 className="text-xl font-bold">Manage report</h2><p id="workflow-help" className="text-sm leading-relaxed text-muted-foreground">Workflow: {STATUS_FLOW.map(s => STATUS_LABELS[s]).join(" → ")}. Rejected and Duplicate are also available.</p><form className="space-y-5" onSubmit={e => { e.preventDefault(); save.mutate(false); }}><fieldset disabled={save.isPending} className="space-y-5"><legend className="sr-only">Report status, priority and assignment</legend>
     <div className="space-y-2"><Label htmlFor="report-status">Status</Label><select id="report-status" className={selectClass} value={status} aria-describedby="workflow-help" onChange={e => setStatus(e.target.value as ReportStatus)}>{Object.entries(STATUS_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}</select></div>
-    <div className="space-y-2"><Label htmlFor="report-priority">Priority</Label><select id="report-priority" className={selectClass} value={priority} onChange={e => setPriority(e.target.value as ReportPriority | "")} aria-describedby="priority-help"><option value="">Not set</option>{Object.entries(PRIORITY_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}</select><p id="priority-help" className="text-sm leading-relaxed text-muted-foreground">Set priority from the actual risk and operational policy; ClearRoute never guesses it from keywords.</p></div>
+    <div className="space-y-2"><Label htmlFor="report-priority">Priority</Label><select id="report-priority" className={selectClass} value={priority} onChange={e => setPriority(e.target.value as ReportPriority | "")} aria-describedby="priority-help"><option value="">Not set</option>{Object.entries(PRIORITY_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}</select><p id="priority-help" className="text-sm leading-relaxed text-muted-foreground">Set priority from the actual risk and operational policy; SugamPath LPU never guesses it from keywords.</p></div>
     <div className="space-y-2"><Label htmlFor="report-assignee">Assign to</Label><select id="report-assignee" className={selectClass} value={assignee} onChange={e => setAssignee(e.target.value)}><option value="">Unassigned</option>{report.assigned_to && !staff.some(s => s.id === report.assigned_to) && <option value={report.assigned_to}>Current assignee (not in directory)</option>}{staff.map(s => <option key={s.id} value={s.id}>{s.display_name || "Staff member"}</option>)}</select></div>
     <Button className="w-full" disabled={save.isPending || !dirty}>{save.isPending ? "Saving…" : "Save changes"}</Button>
   </fieldset></form><Button variant="success" className="w-full" disabled={save.isPending || report.status === "resolved" || dirty} onClick={() => save.mutate(true)}><CheckCircle2 aria-hidden />Mark resolved</Button>{dirty && <p className="text-sm text-muted-foreground">Save changes first to use the quick resolve action.</p>}</section>;

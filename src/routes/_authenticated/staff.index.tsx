@@ -15,9 +15,9 @@ import type { ReportRow } from "@/lib/db-types";
 
 export const Route = createFileRoute("/_authenticated/staff/")({
   head: () => ({ meta: [
-    { title: "Estate dashboard – ClearRoute" },
+    { title: "Estate dashboard – SugamPath LPU" },
     { name: "description", content: "Manage campus accessibility reports, priorities and estate team assignments." },
-    { property: "og:title", content: "Estate dashboard – ClearRoute" },
+    { property: "og:title", content: "Estate dashboard – SugamPath LPU" },
     { property: "og:description", content: "Private estate team overview of campus accessibility reports and operational progress." },
     { name: "robots", content: "noindex" },
   ] }),
@@ -74,7 +74,7 @@ function Dashboard() {
     { name: "Resolved", value: reports.filter(r => r.status === "resolved").length, Icon: CheckCircle2 },
   ];
   return <div className="mx-auto max-w-7xl space-y-8 px-4 py-10">
-    <PageHeader eyebrow="ClearRoute · Estate operations" title="Estate team dashboard" description="Review accessibility barriers and coordinate the next step. Overview figures include all reports." />
+    <PageHeader eyebrow="SugamPath LPU · Estate operations" title="Estate team dashboard" description="Review accessibility barriers and coordinate the next step. Overview figures include all reports." />
     <section aria-label="Report statistics" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-6">{stats.map(({ name, value, Icon }) => <div key={name} className="surface-card space-y-2 p-5"><Icon aria-hidden className="size-6 text-primary" /><p className="text-sm font-medium text-muted-foreground">{name}</p><p className="text-3xl font-bold tabular-nums">{value}</p></div>)}</section>
     <div className="grid gap-6 lg:grid-cols-2">
       <section className="surface-card min-w-0 p-6" aria-labelledby="categories-title"><h2 id="categories-title" className="text-xl font-bold">Reports by category</h2>

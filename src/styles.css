@@ -10,7 +10,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * ClearRoute design system — accessibility-first university platform.
+ * SugamPath LPU design system — accessibility-first university platform.
  * Navy #142B4A, primary blue #2457A7, light bg #F5F7FB, orange accent #F59E0B,
  * success green #198754, danger red #DC3545. All colors in oklch.
  */
@@ -80,8 +80,8 @@
   --secondary-foreground: oklch(0.288 0.064 256.5);
   --muted: oklch(0.939 0.012 259.8);
   --muted-foreground: oklch(0.464 0.046 259.2);
-  --accent: oklch(0.769 0.165 70.1);
-  --accent-foreground: oklch(0.288 0.064 256.5);
+  --accent: oklch(0.62 0.165 50);
+  --accent-foreground: oklch(1 0 0);
   --destructive: oklch(0.592 0.202 21.2);
   --destructive-foreground: oklch(1 0 0);
   --success: oklch(0.552 0.123 157);
@@ -95,7 +95,7 @@
   --demo-foreground: oklch(0.4 0.1 60);
   --border: oklch(0.869 0.02 252.9);
   --input: oklch(0.78 0.03 255);
-  --ring: oklch(0.769 0.165 70.1);
+  --ring: oklch(0.62 0.165 50);
   --chart-1: oklch(0.468 0.14 259.3);
   --chart-2: oklch(0.769 0.165 70.1);
   --chart-3: oklch(0.552 0.123 157);
@@ -103,12 +103,12 @@
   --chart-5: oklch(0.288 0.064 256.5);
   --sidebar: oklch(0.288 0.064 256.5);
   --sidebar-foreground: oklch(1 0 0);
-  --sidebar-primary: oklch(0.769 0.165 70.1);
-  --sidebar-primary-foreground: oklch(0.288 0.064 256.5);
+  --sidebar-primary: oklch(0.62 0.165 50);
+  --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.349 0.08 257.9);
   --sidebar-accent-foreground: oklch(1 0 0);
   --sidebar-border: oklch(0.349 0.08 257.9);
-  --sidebar-ring: oklch(0.769 0.165 70.1);
+  --sidebar-ring: oklch(0.62 0.165 50);
 
   /* map line + marker colors (consumed by Leaflet via getComputedStyle) */
   --map-route: oklch(0.468 0.14 259.3);
@@ -122,12 +122,31 @@
   --gradient-hero: linear-gradient(160deg, var(--navy) 0%, oklch(0.349 0.08 257.9) 55%, var(--primary) 130%);
 }
 
+/* High-contrast & large text mode (toggled from the welcome screen). */
+.hc {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.15 0.03 256);
+  --card-foreground: oklch(0.15 0.03 256);
+  --muted: oklch(0.95 0 0);
+  --muted-foreground: oklch(0.25 0.04 256);
+  --border: oklch(0.35 0.05 256);
+  --input: oklch(0.3 0.05 256);
+  --primary: oklch(0.38 0.14 259);
+  --accent: oklch(0.55 0.16 48);
+  --navy: oklch(0.2 0.06 256);
+  --success: oklch(0.45 0.12 157);
+  --destructive: oklch(0.5 0.2 25);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
   }
   html {
     font-size: 106.25%; /* 17px base for readability */
+  }
+  html.hc {
+    font-size: 125%; /* 20px base in large-text mode */
   }
   body {
     background-color: var(--color-background);

@@ -31,9 +31,9 @@ export const Route = createFileRoute("/route")({
   validateSearch: (s) => searchSchema.parse(s),
   head: () => ({
     meta: [
-      { title: "Find the best accessible route – ClearRoute" },
+      { title: "Find the best accessible route – SugamPath LPU" },
       { name: "description", content: "Calculate step-free, wheelchair-friendly routes across LPU campus with distance, time, ramps, lifts and written directions." },
-      { property: "og:title", content: "Find the best accessible route – ClearRoute" },
+      { property: "og:title", content: "Find the best accessible route – SugamPath LPU" },
       { property: "og:description", content: "Step-free and wheelchair routes calculated from verified campus pathway data." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

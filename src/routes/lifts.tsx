@@ -11,7 +11,7 @@ import { LIFT_STATUS_LABELS, formatDate, timeAgo } from "@/lib/labels";
 import type { LiftRow, LiftStatusValue } from "@/lib/db-types";
 import { PageHeader, EmptyState, ErrorBlock, LoadingBlock } from "@/components/common/PageHeader";
 import { DemoBanner } from "@/components/common/DemoBanner";
-import { DemoPill, LiftStatusBadge } from "@/components/common/badges";
+import { DemoPill } from "@/components/common/badges";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -19,9 +19,9 @@ import { Textarea } from "@/components/ui/textarea";
 export const Route = createFileRoute("/lifts")({
   head: () => ({
     meta: [
-      { title: "Lift availability – ClearRoute" },
+      { title: "Lift availability – SugamPath LPU" },
       { name: "description", content: "Current operational status of campus lifts, when each was last updated, and alternatives during outages." },
-      { property: "og:title", content: "Lift availability – ClearRoute" },
+      { property: "og:title", content: "Lift availability – SugamPath LPU" },
       { property: "og:description", content: "Check which campus lifts are operational before you travel." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -51,37 +51,18 @@ function LiftsPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-6 px-4 py-8">
       <PageHeader
-        title="Lift availability"
-        description={<>Lift status is shown only as recorded by authorised staff. If a status has not been confirmed in the last {data?.settings.lift_status_freshness_hours ?? 24} hours, strict wheelchair routes will not depend on it.</>}
-        actions={<Button asChild variant="outline"><Link to="/report">Report a lift problem</Link></Button>}
+        title="Live Lifts"
+        description={<>Timestamps & Operator. Wheelchair routes only use lifts confirmed in the last {data?.settings.lift_status_freshness_hours ?? 24} hours.</>}
+        actions={<Button asChild variant="hero"><Link to="/report">Report a lift problem</Link></Button>}
       />
       {data?.lifts.some((l) => l.is_demo) && <DemoBanner compact />}
       {q.isPending ? <LoadingBlock /> : q.isError ? <ErrorBlock message={q.error.message} /> : !data || data.lifts.length === 0 ? (
         <EmptyState icon={<ArrowUpDown aria-hidden />} title="No lifts recorded yet">Lifts appear here once their locations have been added to the campus database.</EmptyState>
       ) : (
-        <ul className="grid gap-4 md:grid-cols-2">
-          {data.lifts.map((l) => {
-            const node = data.nodes.find((n) => n.id === l.node_id);
-            const state = liftConfirmedOperational(l, ctx!);
-            return (
-              <li key={l.id} className="surface-card p-5">
-                <div className="flex flex-wrap items-start justify-between gap-2">
-                  <div>
-                    <h2 className="text-xl font-bold">{l.label}</h2>
-                    <p className="text-muted-foreground">{node?.name ?? "Location not linked"}{l.location_description ? ` · ${l.location_description}` : ""}</p>
-                  </div>
-                  {l.is_demo && <DemoPill />}
-                </div>
-                <div className="mt-3 flex flex-wrap items-center gap-2" aria-live="polite">
-                  <LiftStatusBadge status={l.status} stale={state === "stale"} />
-                  <span className="text-sm text-muted-foreground">Last updated {l.status_updated_at ? `${formatDate(l.status_updated_at, true)} (${timeAgo(l.status_updated_at)})` : "never"}</span>
-                </div>
-                {l.issue && <p className="mt-3"><strong>Reported issue:</strong> {l.issue}</p>}
-                {l.alternative_info && <p className="mt-2"><strong>Alternative:</strong> {l.alternative_info}</p>}
-                {canManageLifts && <LiftUpdateForm lift={l} />}
-              </li>
-            );
-          })}
+        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {data.lifts.map((l) => (
+            <LiftCard key={l.id} lift={l} placeName={data.nodes.find((n) => n.id === l.node_id)?.name} state={liftConfirmedOperational(l, ctx!)} canManage={canManageLifts} />
+          ))}
         </ul>
       )}
 
@@ -100,6 +81,47 @@ function LiftsPage() {
         ) : <p className="mt-2 text-muted-foreground">No lift or pathway changes have been recorded yet.</p>}
       </section>
     </div>
+  );
+}
+
+const CARD_STYLE: Record<string, { card: string; pill: string; label: string }> = {
+  ok: { card: "border-success/50 bg-success/8", pill: "bg-success text-success-foreground", label: "WORKING" },
+  stale: { card: "border-warning/70 bg-warning/10", pill: "bg-warning text-warning-foreground", label: "NOT CONFIRMED" },
+  out_of_service: { card: "border-destructive/50 bg-destructive/8", pill: "bg-destructive text-destructive-foreground", label: "LOCKED / OUT" },
+  under_maintenance: { card: "border-warning/70 bg-warning/10", pill: "bg-warning text-warning-foreground", label: "MAINTENANCE" },
+  unknown: { card: "border-border bg-card", pill: "bg-muted-foreground text-card", label: "UNKNOWN" },
+};
+
+function LiftCard({ lift: l, placeName, state, canManage }: { lift: LiftRow; placeName?: string; state: "ok" | "stale" | "down"; canManage: boolean }) {
+  const [open, setOpen] = useState(false);
+  const key = l.status === "operational" ? (state === "ok" ? "ok" : "stale") : l.status;
+  const st = CARD_STYLE[key] ?? CARD_STYLE["unknown"]!;
+  const down = l.status !== "operational";
+  return (
+    <li className={`rounded-2xl border-2 p-5 shadow-sm ${st.card}`}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          <h2 className="text-lg font-bold">{l.label}</h2>
+          <p className="text-sm text-muted-foreground">{placeName ?? "Location not linked"}{l.location_description ? ` · ${l.location_description}` : ""}</p>
+        </div>
+        <span className={`shrink-0 rounded-md px-2.5 py-1 text-xs font-extrabold tracking-wide ${st.pill}`} aria-live="polite">{st.label}</span>
+      </div>
+      <p className="mt-3 text-sm">
+        {l.status_updated_at ? <>Updated <strong>{timeAgo(l.status_updated_at)}</strong> by {l.status_updated_by ? "Operator" : "System"} · {formatDate(l.status_updated_at, true)}</> : "Status never confirmed"}
+      </p>
+      <p className="sr-only">Status: {LIFT_STATUS_LABELS[l.status]}{state === "stale" ? ", not confirmed recently" : ""}</p>
+      {l.issue && <p className="mt-2 text-sm"><strong>Issue:</strong> {l.issue}</p>}
+      {l.alternative_info && <p className={`mt-2 text-sm font-semibold ${down ? "text-destructive" : ""}`}>Alt: {l.alternative_info}</p>}
+      {l.is_demo && <div className="mt-2"><DemoPill /></div>}
+      {canManage ? (
+        <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className={`mt-3 text-sm font-bold underline underline-offset-4 ${down ? "text-destructive" : "text-success"}`}>
+          {open ? "Close status update" : "Tap to Confirm Status"}
+        </button>
+      ) : (
+        <Link to="/report" className={`mt-3 inline-block text-sm font-bold underline underline-offset-4 ${down ? "text-destructive" : "text-success"}`}>Something wrong? Report it</Link>
+      )}
+      {canManage && open && <LiftUpdateForm lift={l} />}
+    </li>
   );
 }
 

@@ -12,10 +12,10 @@ import { Pill } from "@/components/common/badges";
 export const Route = createFileRoute("/_authenticated/notifications")({
   head: () => ({
     meta: [
-      { title: "Notifications – ClearRoute" },
+      { title: "Notifications – SugamPath LPU" },
       { name: "description", content: "Your report updates, lift status changes and campus route disruptions." },
-      { property: "og:title", content: "Notifications – ClearRoute" },
-      { property: "og:description", content: "In-app notifications from ClearRoute." },
+      { property: "og:title", content: "Notifications – SugamPath LPU" },
+      { property: "og:description", content: "In-app notifications from SugamPath LPU." },
       { name: "robots", content: "noindex" },
     ],
   }),

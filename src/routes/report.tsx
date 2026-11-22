@@ -16,13 +16,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/report")({
   head: () => ({
     meta: [
-      { title: "Report an accessibility barrier – ClearRoute" },
+      { title: "Report an accessibility barrier – SugamPath LPU" },
       { name: "description", content: "Tell LPU's estate team about a broken ramp, blocked pathway, locked entrance or lift problem. Get a report ID to track it." },
-      { property: "og:title", content: "Report an accessibility barrier – ClearRoute" },
+      { property: "og:title", content: "Report an accessibility barrier – SugamPath LPU" },
       { property: "og:description", content: "Report campus accessibility problems with an optional photo and track the repair." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
@@ -123,7 +124,7 @@ function ReportPage() {
         <div className="surface-card p-8 text-center" role="status">
           <CheckCircle2 className="mx-auto size-14 text-success" aria-hidden />
           <h1 className="mt-4 text-3xl font-bold">Report submitted</h1>
-          <p className="mt-2 text-lg text-muted-foreground">Thank you. The estate team has been notified in ClearRoute.</p>
+          <p className="mt-2 text-lg text-muted-foreground">Thank you. The estate team has been notified in SugamPath LPU.</p>
           <p className="mt-6 text-sm font-semibold uppercase tracking-wide text-muted-foreground">Your report ID</p>
           <p className="mt-1 font-mono text-4xl font-bold tracking-wider">{done.code}</p>
           <Button variant="outline" className="mt-3" onClick={() => { void navigator.clipboard.writeText(done.code); toast.success("Report ID copied"); }}><Copy aria-hidden /> Copy ID</Button>
@@ -141,32 +142,69 @@ function ReportPage() {
   const err = (k: string) => errors[k] ? <p id={`${k}-error`} className="mt-1 font-semibold text-destructive">{errors[k]}</p> : null;
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <PageHeader title="Report a barrier" description="Tell the campus estate team about an accessibility problem. Please don't include medical details or other personal information." />
-      <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-6 lg:grid-cols-[1fr_1fr]">
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <PageHeader title="Report Barrier" description="3-Tap Quick Report. Please don't include medical details or other personal information." />
+      <form onSubmit={onSubmit} noValidate className="mt-6 grid gap-6 lg:grid-cols-2">
+        <div className="space-y-5">
+          <div className="surface-card space-y-6 p-5">
+            <h2 className="text-xl font-bold">3-Tap Quick Barrier Report</h2>
+            <fieldset aria-describedby={errors["category"] ? "category-error" : undefined}>
+              <legend className="text-base font-bold">1. Select Barrier Type <span aria-hidden>*</span></legend>
+              <div id="category" tabIndex={-1} role="radiogroup" aria-label="Barrier type" className="mt-3 grid grid-cols-2 gap-2 focus:outline-none">
+                {(Object.keys(CATEGORY_LABELS) as ReportCategory[]).map((k) => {
+                  const on = category === k;
+                  return (
+                    <button
+                      key={k}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => setCategory(k)}
+                      className={cn(
+                        "min-h-14 rounded-xl px-3 py-2 text-center text-sm font-bold transition-colors",
+                        on ? "bg-navy text-navy-foreground shadow-md" : "bg-secondary text-foreground hover:bg-muted",
+                      )}
+                    >
+                      {SHORT_LABELS[k]}
+                    </button>
+                  );
+                })}
+              </div>
+              {err("category")}
+            </fieldset>
+
+            <fieldset className="space-y-3" aria-describedby={errors["location"] ? "location-error" : undefined}>
+              <legend className="text-base font-bold">2. Location (Auto-GPS / Map) <span aria-hidden>*</span></legend>
+              <div className="flex flex-wrap gap-2">
+                <Button type="button" variant="navy" size="sm" onClick={shareLocation}><Crosshair aria-hidden /> Use my GPS location</Button>
+                {point && <Button type="button" variant="ghost" size="sm" onClick={() => setPoint(null)}><X aria-hidden /> Clear point</Button>}
+              </div>
+              {point && <p className="text-sm font-semibold text-success" role="status">Point selected ({point.lat.toFixed(5)}, {point.lng.toFixed(5)})</p>}
+              <div>
+                <Label htmlFor="place">Campus place</Label>
+                <select id="place" value={nodeId} onChange={(e) => setNodeId(e.target.value)} className="mt-1.5 h-12 w-full rounded-lg border border-input bg-background px-3 text-base">
+                  <option value="">Not listed / not sure</option>
+                  {places.map((p) => <option key={p.id} value={p.id}>{p.name}{p.is_demo ? " (demo)" : ""}</option>)}
+                </select>
+              </div>
+              <div>
+                <Label htmlFor="locationText">Describe the location</Label>
+                <Input id="locationText" value={locationText} onChange={(e) => setLocationText(e.target.value)} maxLength={300} placeholder="e.g. East ramp junction near parking" className="mt-1.5 h-12 text-base" />
+              </div>
+              <p className="text-sm text-muted-foreground"><MapPin className="mr-1 inline size-4" aria-hidden />Or tap the exact point on the map:</p>
+              {q.data && (
+                <MapView className="h-64" ariaLabel="Map for choosing the barrier location. Click the map to place a marker." nodes={q.data.nodes} edges={[]} showJunctions={false} pendingPoint={point} selectedNodeId={nodeId || null} onMapClick={(lat, lng) => setPoint({ lat, lng })} onNodeClick={(id) => setNodeId(id)} />
+              )}
+              <p className="text-xs text-muted-foreground">Your location is only used when you choose to share it, and only for this report.</p>
+              {err("location")}
+            </fieldset>
+          </div>
+        </div>
+
         <div className="space-y-5">
           <div className="surface-card space-y-5 p-5">
             <div>
-              <Label htmlFor="category" className="text-base font-bold">Barrier category <span aria-hidden>*</span></Label>
-              <select id="category" value={category} onChange={(e) => setCategory(e.target.value as ReportCategory)} aria-invalid={!!errors["category"]} aria-describedby={errors["category"] ? "category-error" : undefined} className="mt-1.5 h-12 w-full rounded-lg border border-input bg-background px-3 text-base">
-                <option value="">Choose a category…</option>
-                {Object.entries(CATEGORY_LABELS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}
-              </select>
-              {err("category")}
-            </div>
-            <div>
-              <Label htmlFor="description" className="text-base font-bold">Description <span aria-hidden>*</span></Label>
-              <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={5} maxLength={2000} aria-invalid={!!errors["description"]} aria-describedby={`desc-help${errors["description"] ? " description-error" : ""}`} className="mt-1.5 text-base" />
-              <p id="desc-help" className="text-sm text-muted-foreground">What is the problem and how does it affect access? {description.length}/2000</p>
-              {err("description")}
-            </div>
-            <div>
-              <Label htmlFor="occurred" className="text-base font-bold">Date and time noticed <span aria-hidden>*</span></Label>
-              <Input id="occurred" type="datetime-local" value={occurred} max={nowLocal()} onChange={(e) => setOccurred(e.target.value)} aria-invalid={!!errors["occurred"]} className="mt-1.5 h-12 text-base" />
-              {err("occurred")}
-            </div>
-            <div>
-              <p className="text-base font-bold" id="photo-label">Photograph (optional)</p>
+              <p className="text-base font-bold" id="photo-label">3. Add Photo (optional)</p>
               <input ref={fileRef} id="photo" type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" aria-labelledby="photo-label" aria-describedby="photo-help" onChange={(e) => pickFile(e.target.files?.[0] ?? null)} />
               {preview ? (
                 <div className="mt-2 flex items-start gap-3">
@@ -174,62 +212,55 @@ function ReportPage() {
                   <Button type="button" variant="outline" size="sm" onClick={() => { pickFile(null); if (fileRef.current) fileRef.current.value = ""; }}><X aria-hidden /> Remove photo</Button>
                 </div>
               ) : (
-                <Button type="button" variant="outline" className="mt-2" onClick={() => fileRef.current?.click()}><ImagePlus aria-hidden /> Attach a photo</Button>
+                <button type="button" onClick={() => fileRef.current?.click()} className="mt-2 flex min-h-24 w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-input bg-secondary/50 font-semibold text-muted-foreground hover:border-primary hover:text-foreground">
+                  <ImagePlus className="size-5" aria-hidden /> Attach Photo
+                </button>
               )}
               <p id="photo-help" className="mt-1 text-sm text-muted-foreground">JPG, PNG or WebP, up to 5 MB. Avoid photographing people's faces.</p>
               {err("photo")}
             </div>
-          </div>
-
-          <div className="surface-card space-y-3 p-5">
-            <p className="text-base font-bold">Submit as</p>
-            {user ? (
-              <div className="flex items-start gap-3">
-                <Checkbox id="anon" checked={anonymous} onCheckedChange={(v) => setAnonymous(v === true)} className="mt-0.5 size-6" />
-                <div>
-                  <Label htmlFor="anon" className="text-base font-normal">Submit anonymously</Label>
-                  <p className="text-sm text-muted-foreground">Anonymous reports aren't linked to your account, so you won't get status notifications — track them with the report ID.</p>
+            <div>
+              <Label htmlFor="description" className="text-base font-bold">What's the problem? <span aria-hidden>*</span></Label>
+              <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} rows={4} maxLength={2000} aria-invalid={!!errors["description"]} aria-describedby={`desc-help${errors["description"] ? " description-error" : ""}`} className="mt-1.5 text-base" />
+              <p id="desc-help" className="text-sm text-muted-foreground">How does it affect access? {description.length}/2000</p>
+              {err("description")}
+            </div>
+            <div>
+              <Label htmlFor="occurred" className="text-base font-bold">Noticed at <span aria-hidden>*</span></Label>
+              <Input id="occurred" type="datetime-local" value={occurred} max={nowLocal()} onChange={(e) => setOccurred(e.target.value)} aria-invalid={!!errors["occurred"]} className="mt-1.5 h-12 text-base" />
+              {err("occurred")}
+            </div>
+            <div className="border-t border-border pt-4">
+              {user ? (
+                <div className="flex items-start gap-3">
+                  <Checkbox id="anon" checked={anonymous} onCheckedChange={(v) => setAnonymous(v === true)} className="mt-0.5 size-6" />
+                  <div>
+                    <Label htmlFor="anon" className="text-base font-normal">Submit anonymously</Label>
+                    <p className="text-sm text-muted-foreground">Anonymous reports aren't linked to your account — track them with the report ID.</p>
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <p className="text-muted-foreground">You're submitting anonymously. <Link to="/auth" search={{ redirect: "/report" }} className="font-semibold text-primary underline underline-offset-4">Sign in</Link> to get status updates in your account.</p>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-5">
-          <fieldset className="surface-card space-y-4 p-5" aria-describedby={errors["location"] ? "location-error" : undefined}>
-            <legend className="sr-only">Location</legend>
-            <p className="text-base font-bold" aria-hidden>Location <span>*</span></p>
-            <div>
-              <Label htmlFor="place">Campus place</Label>
-              <select id="place" value={nodeId} onChange={(e) => setNodeId(e.target.value)} className="mt-1.5 h-12 w-full rounded-lg border border-input bg-background px-3 text-base">
-                <option value="">Not listed / not sure</option>
-                {places.map((p) => <option key={p.id} value={p.id}>{p.name}{p.is_demo ? " (demo)" : ""}</option>)}
-              </select>
-            </div>
-            <div>
-              <Label htmlFor="locationText">Describe the location</Label>
-              <Input id="locationText" value={locationText} onChange={(e) => setLocationText(e.target.value)} maxLength={300} placeholder="e.g. side entrance near the parking area" className="mt-1.5 h-12 text-base" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground"><MapPin className="mr-1 inline size-4" aria-hidden />Or select the point on the map:</p>
-              {q.data && (
-                <MapView className="mt-2 h-72" ariaLabel="Map for choosing the barrier location. Click the map to place a marker." nodes={q.data.nodes} edges={[]} showJunctions={false} pendingPoint={point} selectedNodeId={nodeId || null} onMapClick={(lat, lng) => setPoint({ lat, lng })} onNodeClick={(id) => setNodeId(id)} />
+              ) : (
+                <p className="text-sm text-muted-foreground">You're submitting anonymously. <Link to="/auth" search={{ redirect: "/report" }} className="font-semibold text-primary underline underline-offset-4">Sign in</Link> to get status updates.</p>
               )}
-              <div className="mt-2 flex flex-wrap gap-2">
-                <Button type="button" variant="outline" size="sm" onClick={shareLocation}><Crosshair aria-hidden /> Share my current location</Button>
-                {point && <Button type="button" variant="ghost" size="sm" onClick={() => setPoint(null)}><X aria-hidden /> Clear map point</Button>}
-              </div>
-              {point && <p className="mt-1 text-sm text-muted-foreground" role="status">Map point selected ({point.lat.toFixed(5)}, {point.lng.toFixed(5)}).</p>}
-              <p className="mt-1 text-xs text-muted-foreground">Your location is only used when you choose to share it, and only for this report.</p>
             </div>
-            {err("location")}
-          </fieldset>
+          </div>
           {errors["form"] && <p role="alert" className="font-semibold text-destructive">{errors["form"]}</p>}
-          <Button type="submit" size="xl" variant="hero" className="w-full" disabled={busy}>{busy ? "Submitting…" : "Submit report"}</Button>
+          <Button type="submit" size="xl" variant="hero" className="w-full" disabled={busy}>{busy ? "Submitting…" : "Submit & Reroute Users"}</Button>
+          <p className="text-center text-sm text-muted-foreground">Estate staff are alerted instantly. Once a barrier is confirmed, routes avoid it automatically.</p>
         </div>
       </form>
     </div>
   );
 }
+
+const SHORT_LABELS: Record<ReportCategory, string> = {
+  broken_ramp: "Blocked / Broken Ramp",
+  lift_not_working: "Locked Lift",
+  ramp_ends_at_step: "Kerb / Step",
+  blocked_pathway: "Obstacle on Path",
+  locked_entrance: "Locked Entrance",
+  damaged_pavement: "Damaged Pavement",
+  narrow_pathway: "Narrow Path",
+  missing_signage: "Missing Signage",
+  other: "Other Issue",
+};

@@ -11,9 +11,9 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/_authenticated/my-reports")({
   head: () => ({
     meta: [
-      { title: "My reports – ClearRoute" },
+      { title: "My reports – SugamPath LPU" },
       { name: "description", content: "Track the accessibility barrier reports you have submitted to the LPU estate team." },
-      { property: "og:title", content: "My reports – ClearRoute" },
+      { property: "og:title", content: "My reports – SugamPath LPU" },
       { property: "og:description", content: "Your submitted accessibility reports and their current status." },
       { name: "robots", content: "noindex" },
     ],

@@ -7,7 +7,7 @@ import { campusDataQuery, type CampusData } from "@/lib/campus-data";
 import { MapView } from "@/components/map/MapView";
 import { MapLegend } from "@/components/map/MapLegend";
 import { DemoBanner } from "@/components/common/DemoBanner";
-import { EmptyState, ErrorBlock, LoadingBlock } from "@/components/common/PageHeader";
+import { PageHeader, EmptyState, ErrorBlock, LoadingBlock } from "@/components/common/PageHeader";
 import { DemoPill, LiftStatusBadge, Pill, VerificationBadge } from "@/components/common/badges";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,9 +20,9 @@ import type { EdgeRow, NodeRow } from "@/lib/db-types";
 export const Route = createFileRoute("/map")({
   head: () => ({
     meta: [
-      { title: "Accessible campus map – ClearRoute" },
+      { title: "Accessible campus map – SugamPath LPU" },
       { name: "description", content: "Interactive LPU campus accessibility map: entrances, ramps, lifts, verified pathways and reported barriers." },
-      { property: "og:title", content: "Accessible campus map – ClearRoute" },
+      { property: "og:title", content: "Accessible campus map – SugamPath LPU" },
       { property: "og:description", content: "See verified pathways, ramps, lifts and reported barriers on the campus map." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -97,16 +97,14 @@ function MapPage() {
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8">
-      <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-3xl font-bold md:text-4xl">Accessible campus map</h1>
-          <p className="mt-1 text-lg text-muted-foreground">Select a marker or pathway to see its accessibility details and when it was last checked.</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={locate}><Crosshair aria-hidden /> Show my location</Button>
-          <Button asChild><Link to="/route"><Navigation aria-hidden /> Find a route</Link></Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Accessible Map"
+        description="Step-free paths & live barriers. Select a marker or pathway to see when it was last checked."
+        actions={<>
+          <Button variant="onDark" onClick={locate}><Crosshair aria-hidden /> My location</Button>
+          <Button asChild variant="hero"><Link to="/route"><Navigation aria-hidden /> Find a route</Link></Button>
+        </>}
+      />
 
       {data?.hasDemo && <div className="mt-4"><DemoBanner /></div>}
 

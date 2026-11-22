@@ -1,4 +1,4 @@
-# ClearRoute roadmap
+# SugamPath LPU roadmap
 
 - [ ] Backend: schema, roles, RLS, storage, triggers, demo data
 - [ ] Admin email bootstrap (waiting on user's admin email)

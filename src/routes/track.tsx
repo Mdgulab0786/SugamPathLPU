@@ -16,9 +16,9 @@ export const Route = createFileRoute("/track")({
   validateSearch: (s) => z.object({ code: z.string().optional() }).parse(s),
   head: () => ({
     meta: [
-      { title: "Track a barrier report – ClearRoute" },
-      { name: "description", content: "Check the progress of an accessibility barrier report using its ClearRoute report ID." },
-      { property: "og:title", content: "Track a barrier report – ClearRoute" },
+      { title: "Track a barrier report – SugamPath LPU" },
+      { name: "description", content: "Check the progress of an accessibility barrier report using its SugamPath LPU report ID." },
+      { property: "og:title", content: "Track a barrier report – SugamPath LPU" },
       { property: "og:description", content: "Enter your report ID to see its current status and history." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
